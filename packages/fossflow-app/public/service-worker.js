@@ -21,21 +21,17 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    var req = event.request
-    // Do not cache or serve from cache any requests to /api
-    // Also skip caching for non-GET requests (POST, PUT, etc.)
-    if (new URL(req.url).pathname.startsWith('/api') || req.method !== 'GET') {
-      return event.respondWith(fetch(req));
-    }
     caches.match(event.request)
       .then(response => {
         if (response) {
           return response;
         }
 
-        return fetch(event.request).then(
+        return fetch(event.req).then(
           response => {
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+            // Do not cache or serve from cache any requests to /api
+            // Also skip caching for non-GET requests (POST, PUT, etc.)
+            if (!response || response.status !== 200 || response.type !== 'basic' || new URL(event.req.url).pathname.startsWith('/api') || event.req.method !== 'GET') {
               return response;
             }
 
