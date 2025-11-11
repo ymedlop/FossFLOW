@@ -31,8 +31,10 @@ self.addEventListener('fetch', event => {
           response => {
             // Do not cache or serve from cache any requests to /api
             // Also skip caching for non-GET requests (POST, PUT, etc.)
-            if (!response || response.status !== 200 || response.type !== 'basic' || new URL(event.req.url).pathname.startsWith('/api') || event.req.method !== 'GET') {
-              return response;
+            if (!new URL(event.req.url).pathname.startsWith('/api') || event.req.method == 'GET') {
+              if (!response || response.status !== 200 || response.type !== 'basic') {
+                return response;
+              }
             }
 
             const responseToCache = response.clone();
