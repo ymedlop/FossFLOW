@@ -21,6 +21,12 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
+    const req = event.request
+    // Do not cache or serve from cache any requests to /api
+    // Also skip caching for non-GET requests (POST, PUT, etc.)
+    if (new URL(req.url).pathname.startsWith('/api') || req.method !== 'GET') {
+      return event.respondWith(fetch(req));
+    }
     caches.match(event.request)
       .then(response => {
         if (response) {
