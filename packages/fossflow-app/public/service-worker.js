@@ -27,11 +27,11 @@ self.addEventListener('fetch', event => {
           return response;
         }
 
-        return fetch(event.req).then(
+        return fetch(event.request).then(
           response => {
             // Do not cache or serve from cache any requests to /api
             // Also skip caching for non-GET requests (POST, PUT, etc.)
-            if (!new URL(event.req.url).pathname.startsWith('/api') || event.req.method == 'GET') {
+            if (!new URL(event.request.url).pathname.startsWith('/api') || event.request.method == 'GET') {
               if (!response || response.status !== 200 || response.type !== 'basic') {
                 return response;
               }
